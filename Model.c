@@ -112,8 +112,8 @@ void reset_game(Board * board,Score * score){
     destroy_player(board->p2->tail);
     board->p1->tail=NULL;
     board->p2->tail=NULL;
-    board->p1->x=5; board->p1->y=10; board->p1->dirx=0; board->p1->diry=1;
-    board->p2->x=10; board->p2->y=10; board->p2->dirx=0; board->p2->diry=-1;
+    board->p1->x=5; board->p1->y=10; board->p1->dirx=1; board->p1->diry=0;
+    board->p2->x=10; board->p2->y=10; board->p2->dirx=-1; board->p2->diry=0;
     score->scoreP1=0; score->scoreP2=0;
 }
 void reset_round(Board * board){
@@ -122,8 +122,8 @@ void reset_round(Board * board){
     destroy_player(board->p2->tail);
     board->p1->tail=NULL;
     board->p2->tail=NULL;
-    board->p1->x=5; board->p1->y=10; board->p1->dirx=0; board->p1->diry=1;
-    board->p2->x=10; board->p2->y=10; board->p2->dirx=0; board->p2->diry=-1;
+    board->p1->x=5; board->p1->y=10; board->p1->dirx=1; board->p1->diry=0;
+    board->p2->x=10; board->p2->y=10; board->p2->dirx=-1; board->p2->diry=0;
 }
 
 void update_score(Board * game,Score * scr){
