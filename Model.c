@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #define HEIGHT 80
 #define WIDTH 60
-#define MAX_SCORE 3
 
 Board * init_game(){
     Board * b=(Board *)malloc(sizeof(Board));
@@ -28,7 +27,7 @@ Board * init_game(){
         perror("Error Player allocation");
         exit(EXIT_FAILURE);
     }
-    b->p2->x=10;
+    b->p2->x=30;
     b->p2->y=10;
     b->p2->dirx=-1,b->p2->diry=0;
     b->p2->tail=NULL;
@@ -58,8 +57,8 @@ void destroy_game(Board * b,Score *s){
 }
 
 int collision_check(Board * board, Player * player){
-    //Cette condition est très longue pck cette fonction ne sait pas quelle joueur elle check, à modifié peut-être ?
     if(player->x<=0 || player->y<=0 || player->x>=WIDTH || player->y>=HEIGHT)return 1;
+    //Cette condition est très longue pck cette fonction ne sait pas quelle joueur elle check, à modifié peut-être ?
     if(board->p1->x==player->x && board->p1->y==player->y && board->p2->x==player->x && board->p2->y==player->y)return 1;
     Tail * parc=board->p1->tail;
     while(parc!=NULL){
@@ -78,33 +77,23 @@ int collision_check(Board * board, Player * player){
     return 0;
 }
 
-void direction_left(Board* b, int nbPLayer){
-    if(nbPLayer){
-        b->p2->dirx=-1; b->p2->diry=0;
-        return;
+void set_direction(Board * b,int nbPlayer,Direction dir){
+
+    Player * player =nbPlayer? b->p2: b->p1;
+    int sauvx=player->dirx,sauvy=player->diry;
+    switch(dir){
+        case UP: player->dirx=0;player->diry=-1;
+        break;
+        case DOWN: player->dirx=0;player->diry=1;
+        break;
+        case LEFT: player->dirx=-1;player->diry=0;
+        break;
+        case RIGHT: player->dirx=1;player->diry=0;
+        break;
     }
-    b->p1->dirx=-1; b->p1->diry=0;
-}
-void direction_right(Board* b, int nbPLayer){
-    if(nbPLayer){
-        b->p2->dirx=1; b->p2->diry=0;
-        return;
+    if(sauvx==-1*player->dirx && sauvy== -1*player->diry){
+        player->dirx=sauvx;player->diry=sauvy;
     }
-    b->p1->dirx=1; b->p1->diry=0;
-}
-void direction_down(Board* b, int nbPLayer){
-    if(nbPLayer){
-        b->p2->dirx=0; b->p2->diry=1;
-        return;
-    }
-    b->p1->dirx=0; b->p1->diry=1;
-}
-void direction_up(Board* b, int nbPLayer){
-    if(nbPLayer){
-        b->p2->dirx=0; b->p2->diry=-1;
-        return;
-    }
-    b->p1->dirx=0; b->p1->diry=-1;
 }
 void add_tail(Player ** p){
     Tail * nhead=(Tail *)malloc(sizeof(Tail));
@@ -117,25 +106,44 @@ void add_tail(Player ** p){
     (*p)->tail=nhead;
     (*p)->x+=(*p)->dirx,(*p)->y+=(*p)->diry;
 }
+void reset_game(Board * board,Score * score){
+    if(!board||!score)return;
+    destroy_player(board->p1->tail);
+    destroy_player(board->p2->tail);
+    board->p1->tail=NULL;
+    board->p2->tail=NULL;
+    board->p1->x=5; board->p1->y=10; board->p1->dirx=0; board->p1->diry=1;
+    board->p2->x=10; board->p2->y=10; board->p2->dirx=0; board->p2->diry=-1;
+    score->scoreP1=0; score->scoreP2=0;
+}
+void reset_round(Board * board){
+    if(!board)return;
+    destroy_player(board->p1->tail);
+    destroy_player(board->p2->tail);
+    board->p1->tail=NULL;
+    board->p2->tail=NULL;
+    board->p1->x=5; board->p1->y=10; board->p1->dirx=0; board->p1->diry=1;
+    board->p2->x=10; board->p2->y=10; board->p2->dirx=0; board->p2->diry=-1;
+}
 
 void update_score(Board * game,Score * scr){
     int tmp1,tmp2;
     tmp1=collision_check(game,game->p1);
     tmp2=collision_check(game,game->p2);
-    if(tmp1 && !tmp2)scr->scoreP2++;
-    if(tmp2 && !tmp1)scr->scoreP1++;
-}
-int main(){
-    Board * b=init_game();
-    Score * s=init_Score();
-    
-    for(int i=0;i<5;i++){
-        if(i==4)direction_up(b,0);
-        add_tail(&(b->p2));
-        add_tail(&(b->p1));
-
-        update_score(b,s);
-        printf("score P1=%d, socr P2=%d\n",s->scoreP1,s->scoreP2);
+    if(tmp1 && !tmp2){
+        scr->scoreP2++;
+        reset_round(game);
     }
-    destroy_game(b,s);
+    if(tmp2 && !tmp1){
+        scr->scoreP1++;
+        reset_round(game);
+    }
+    if(tmp1 && tmp2){
+        reset_round(game);
+    }
 }
+
+int gameOver(Score *score){
+    return (score->scoreP1>=MAX_SCORE || score->scoreP2>=MAX_SCORE);
+}
+

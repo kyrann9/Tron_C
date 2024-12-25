@@ -1,6 +1,12 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#define MAX_SCORE 3
+
+typedef enum{
+    UP,RIGHT,DOWN,LEFT
+}Direction;
+
 struct _tail {
     struct _tail * tail;
     int x,y;
@@ -26,6 +32,7 @@ typedef struct{
 
 
 Board * init_game();
+Score * init_Score();
 void destroy_player(Tail * p);
 void destroy_game(Board * b,Score *s);
 int collision_check(Board * board, Player * player);
@@ -34,5 +41,9 @@ void direction_up(Board* b, int nbPLayer);
 void direction_right(Board* b, int nbPLayer);
 void direction_down(Board* b, int nbPLayer);
 void direction_left(Board* b, int nbPLayer);
-
+void update_score(Board * game,Score * scr);
+void set_direction(Board * b,int nbPlayer,Direction dir);
+void reset_game(Board * board,Score * score);
+void reset_round(Board * board);
+int gameOver(Score *score);
 #endif
