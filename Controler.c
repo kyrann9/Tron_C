@@ -20,27 +20,11 @@ void mainLoop(Board * board, Score * score, Visual * view_SDL){
     int quit=1;
     SDL_Event event;
     Uint32 last=SDL_GetTicks();
-    SDL_RenderClear(view_SDL->renderer);
-
-    SDL_RenderPresent(view_SDL->renderer);
+    dessine(board,view_SDL);
     while(quit){
         if(gameOver(score)){
             //Code to check if user wants to restart ? Or to avoid them moving objects when the game stopped 
-            while (SDL_PollEvent(&event))
-            {
-                if(event.type==SDL_QUIT){
-                    quit=0;
-                }
-                else{
-                    switch(event.key.keysym.sym){
-                        case SDLK_ESCAPE:
-                            quit=0;
-                            break;
-                        case SDLK_SPACE:
-                            reset_game(board,score);
-                    }
-                }
-            }
+            quit=endgame(board,score,view_SDL);
         }
         else{
             while (SDL_PollEvent(&event))
@@ -51,21 +35,15 @@ void mainLoop(Board * board, Score * score, Visual * view_SDL){
                     quit=0;
                     break;
                 case SDL_KEYDOWN:
-                    quit=checkEvent(event,board);
+                    quit=keyPressEvent(event,board);
                     break;
                 default:
                     break;
                 }
             }
-            if(SDL_GetTicks()-last>=1000){
-            add_tail(&(board->p1));
-            printf("New co 1: x=%d y=%d\n", board->p1->x,board->p1->y);
-            add_tail(&(board->p2));
-            printf("New co 2: x=%d y=%d\n", board->p2->x,board->p2->y);
-            last=SDL_GetTicks();
-            update_score(board,score);
-            printf("score %d %d\n",score->scoreP1,score->scoreP2);
-            dessine(board, view_SDL);
+            if(SDL_GetTicks()-last>=75){
+                quit=dessine_joueur(board,score,view_SDL);
+                last=SDL_GetTicks();
             }
         }
         SDL_Delay(floor(16.666f)); //Caps the FPS
@@ -74,13 +52,38 @@ void mainLoop(Board * board, Score * score, Visual * view_SDL){
     destroy_game(board,score);
     cleanup(view_SDL);
 }
-void dessine(Board * b, Visual * view_SDL){
-    return;
+
+
+void dessine(Board * b,Visual * view_SDL){
+    draw_grid(b,view_SDL);
 }
-int checkEvent(SDL_Event event,Board * board){
+
+
+int dessine_joueur(Board * board, Score* score, Visual * view_SDL){
+    SDL_Event event;
+    add_tail(&(board->p1));
+    add_tail(&(board->p2));
+    if(update_score(board,score) && !gameOver(score)){
+        int continu=1;
+        while(continu==1){
+        while (SDL_PollEvent(&event)){
+            if(event.type==SDL_QUIT)continu=0;
+            else continu=keyPressEvent(event,board);
+        }
+    }
+    dessine(board,view_SDL);
+    return continu;
+    }
+    else draw_player(board,view_SDL);
+    return 1;
+}
+int keyPressEvent(SDL_Event event,Board * board){
     switch(event.key.keysym.sym){
         case SDLK_ESCAPE:
             return 0; 
+            break;
+        case SDLK_SPACE:
+            return 2;
             break;
         case SDLK_UP:
             set_direction(board,1,UP);
@@ -109,6 +112,27 @@ int checkEvent(SDL_Event event,Board * board){
             break;
         default:
             break;
+    }
+    return 1;
+}
+int endgame(Board* board,Score * score,Visual *view){
+    SDL_Event event;
+    while (SDL_PollEvent(&event)){
+        if(event.type==SDL_QUIT){
+            return 0;
+        }
+        else{
+            switch(event.key.keysym.sym){
+                case SDLK_ESCAPE:
+                    return 0;
+                    break;
+                case SDLK_SPACE:
+                    reset_game(board,score);
+                    dessine(board,view);
+                default:
+                    break;
+            }
+        }
     }
     return 1;
 }

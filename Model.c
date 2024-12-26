@@ -2,8 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#define HEIGHT 80
-#define WIDTH 60
+
 
 Board * init_game(){
     Board * b=(Board *)malloc(sizeof(Board));
@@ -18,8 +17,8 @@ Board * init_game(){
         perror("Error Player allocation");
         exit(EXIT_FAILURE);
     }
-    b->p1->x=5;
-    b->p1->y=10;
+    b->p1->x=WIDTH/8;
+    b->p1->y=HEIGHT/2;
     b->p1->dirx=1,b->p1->diry=0;
     b->p1->tail=NULL;
     b->p2=(Player *)malloc(sizeof(Player));
@@ -27,8 +26,8 @@ Board * init_game(){
         perror("Error Player allocation");
         exit(EXIT_FAILURE);
     }
-    b->p2->x=30;
-    b->p2->y=10;
+    b->p2->x=(7*WIDTH)/8+1;
+    b->p2->y=HEIGHT/2;
     b->p2->dirx=-1,b->p2->diry=0;
     b->p2->tail=NULL;
     return b;
@@ -57,7 +56,7 @@ void destroy_game(Board * b,Score *s){
 }
 
 int collision_check(Board * board, Player * player){
-    if(player->x<=0 || player->y<=0 || player->x>=WIDTH || player->y>=HEIGHT)return 1;
+    if(player->x<0 || player->y<0 || player->x>=WIDTH || player->y>=HEIGHT) return 1;
     //Cette condition est très longue pck cette fonction ne sait pas quelle joueur elle check, à modifié peut-être ?
     if(board->p1->x==player->x && board->p1->y==player->y && board->p2->x==player->x && board->p2->y==player->y)return 1;
     Tail * parc=board->p1->tail;
@@ -91,7 +90,7 @@ void set_direction(Board * b,int nbPlayer,Direction dir){
         case RIGHT: player->dirx=1;player->diry=0;
         break;
     }
-    if(sauvx==-1*player->dirx && sauvy== -1*player->diry){
+    if(player->tail && player->tail->x==player->dirx+player->x && player->tail->y==player->y+player->diry){
         player->dirx=sauvx;player->diry=sauvy;
     }
 }
@@ -107,13 +106,7 @@ void add_tail(Player ** p){
     (*p)->x+=(*p)->dirx,(*p)->y+=(*p)->diry;
 }
 void reset_game(Board * board,Score * score){
-    if(!board||!score)return;
-    destroy_player(board->p1->tail);
-    destroy_player(board->p2->tail);
-    board->p1->tail=NULL;
-    board->p2->tail=NULL;
-    board->p1->x=5; board->p1->y=10; board->p1->dirx=1; board->p1->diry=0;
-    board->p2->x=10; board->p2->y=10; board->p2->dirx=-1; board->p2->diry=0;
+    reset_round(board);
     score->scoreP1=0; score->scoreP2=0;
 }
 void reset_round(Board * board){
@@ -122,25 +115,29 @@ void reset_round(Board * board){
     destroy_player(board->p2->tail);
     board->p1->tail=NULL;
     board->p2->tail=NULL;
-    board->p1->x=5; board->p1->y=10; board->p1->dirx=1; board->p1->diry=0;
-    board->p2->x=10; board->p2->y=10; board->p2->dirx=-1; board->p2->diry=0;
+    board->p1->x=WIDTH/8; board->p1->y=HEIGHT/2; board->p1->dirx=1; board->p1->diry=0;
+    board->p2->x=(7*WIDTH)/8+1; board->p2->y=HEIGHT/2; board->p2->dirx=-1; board->p2->diry=0;
 }
 
-void update_score(Board * game,Score * scr){
+int update_score(Board * game,Score * scr){
     int tmp1,tmp2;
     tmp1=collision_check(game,game->p1);
     tmp2=collision_check(game,game->p2);
     if(tmp1 && !tmp2){
         scr->scoreP2++;
         reset_round(game);
+        return 1;
     }
     if(tmp2 && !tmp1){
         scr->scoreP1++;
         reset_round(game);
+        return 1;
     }
     if(tmp1 && tmp2){
         reset_round(game);
+        return 1;
     }
+    return 0;
 }
 
 int gameOver(Score *score){

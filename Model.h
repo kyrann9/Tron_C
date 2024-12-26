@@ -1,6 +1,8 @@
 #ifndef MODEL_H
 #define MODEL_H
 
+#define HEIGHT 40
+#define WIDTH 60
 #define MAX_SCORE 3
 
 typedef enum{
@@ -37,11 +39,7 @@ void destroy_player(Tail * p);
 void destroy_game(Board * b,Score *s);
 int collision_check(Board * board, Player * player);
 void add_tail(Player ** p);
-void direction_up(Board* b, int nbPLayer);
-void direction_right(Board* b, int nbPLayer);
-void direction_down(Board* b, int nbPLayer);
-void direction_left(Board* b, int nbPLayer);
-void update_score(Board * game,Score * scr);
+int update_score(Board * game,Score * scr);
 void set_direction(Board * b,int nbPlayer,Direction dir);
 void reset_game(Board * board,Score * score);
 void reset_round(Board * board);
