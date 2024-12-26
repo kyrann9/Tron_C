@@ -1,17 +1,13 @@
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#ifndef CONTROLER_H
+#define CONTROLER_H
 
-#include "Model.h"
-#include <ncurses.h>
 
-void init_controller();
 
-void cleanup_controller();
-
-void process_input(Board *board);
-
-void draw_game(Board *board, Score *score);
-
-void run_game_ncurses(Board *board, Score *score);
-
+void initGameSDL();
+int keyPressEvent(SDL_Event event,Board * board);
+void mainLoop(Board * board, Score * score, Visual * view_SDL);
+int dessine_joueur(Board * b,Score * s, Visual * view_SDL);
+void dessine(Board*b,Visual * view_SDL,Score*score);
+int endgame(Board *board, Score * score,Visual* view);
+int eventManager(Board* b);
 #endif

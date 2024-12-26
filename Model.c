@@ -143,4 +143,3 @@ int update_score(Board * game,Score * scr){
 int gameOver(Score *score){
     return (score->scoreP1>=MAX_SCORE || score->scoreP2>=MAX_SCORE);
 }
-
