@@ -36,16 +36,77 @@ void cleanup(Visual * v){
     free(v);
 }
 
-void draw_grid(Board* b,Visual * view){
+void draw_score(Score * s,Visual * view){
+    SDL_SetRenderDrawColor(view->renderer,180,30,180,255);
+    draw_number(s->scoreP1,view,100,25);
+    SDL_SetRenderDrawColor(view->renderer,30,30,180,255);
+    draw_number(s->scoreP2,view,view->window_width-150,25);
+}
+
+void draw_number(int score,Visual *view, int depx,int depy){
+    switch(score){
+        case 0:
+            for(int i=depx;i<depx+75;i++){
+                SDL_RenderDrawLine(view->renderer,i,depy,i,depy+20);
+                SDL_RenderDrawLine(view->renderer,i,depy+80,i,depy+100);
+            }
+            for(int j=depy;j<depy+100;j++){
+                SDL_RenderDrawLine(view->renderer,depx,j,depx+25,j);
+                SDL_RenderDrawLine(view->renderer,depx+50,j,depx+75,j);
+            }
+            break;
+        case 1:
+            for(int i=depx;i<depx+75;i++){
+                if(i<depx+50)SDL_RenderDrawLine(view->renderer,i,depy,i,depy+20);
+                SDL_RenderDrawLine(view->renderer,i,depy+80,i,depy+100);
+            }
+            for(int j=depy;j<depy+100;j++){
+                SDL_RenderDrawLine(view->renderer,depx+25,j,depx+50,j);
+            }
+            break;
+        case 2:
+            for(int i=depx;i<depx+75;i++){
+                SDL_RenderDrawLine(view->renderer,i,depy,i,depy+20);
+                SDL_RenderDrawLine(view->renderer,i,depy+40,i,depy+60);
+                SDL_RenderDrawLine(view->renderer,i,depy+80,i,depy+100);
+            }
+            for(int j=depy;j<depy+40;j++){
+                SDL_RenderDrawLine(view->renderer,depx+50,j,depx+75,j);
+                SDL_RenderDrawLine(view->renderer,depx,j+60,depx+25,j+60);
+            }
+            break;
+        case 3:
+            for(int i=depx;i<depx+75;i++){
+                SDL_RenderDrawLine(view->renderer,i,depy,i,depy+20);
+                SDL_RenderDrawLine(view->renderer,i,depy+40,i,depy+60);
+                SDL_RenderDrawLine(view->renderer,i,depy+80,i,depy+100);
+            }
+            for(int j=depy;j<depy+100;j++){
+                SDL_RenderDrawLine(view->renderer,depx+50,j,depx+75,j);
+            }
+            break;
+    }
+}
+
+void draw_grid(Board* b,Visual * view,Score * score){
     SDL_SetRenderDrawColor(view->renderer,22,22,22,255);
     SDL_RenderClear(view->renderer);
-    SDL_RenderPresent(view->renderer);
+    draw_score(score, view);
     SDL_SetRenderDrawColor(view->renderer,77,77,77,255);
-    for(int x=0;x<view->window_width*CELL_SIZE+1;x+=CELL_SIZE){
-        SDL_RenderDrawLine(view->renderer,x,150+1,x,view->window_height);
+    for(int i=0;i<CELL_SIZE+1;i++){
+        //Draw the sides of the board
+        SDL_RenderDrawLine(view->renderer,0,150+i,view->window_width,150+i);
+        SDL_RenderDrawLine(view->renderer,0,view->window_height-i,view->window_width,view->window_height-i);
+
+        SDL_RenderDrawLine(view->renderer,i,150,i,view->window_height);
+        SDL_RenderDrawLine(view->renderer,view->window_width-i,150,view->window_width-i,view->window_height);
+
     }
-    for(int y=150;y<view->window_height*CELL_SIZE+1;y+=CELL_SIZE){
-        SDL_RenderDrawLine(view->renderer,0,y,view->window_width,y);
+    for(int x=CELL_SIZE;x<view->window_width-CELL_SIZE+1;x+=CELL_SIZE){
+        SDL_RenderDrawLine(view->renderer,x,150+CELL_SIZE,x,view->window_height-CELL_SIZE);
+    }
+    for(int y=150+CELL_SIZE;y<view->window_height-CELL_SIZE;y+=CELL_SIZE){
+        SDL_RenderDrawLine(view->renderer,CELL_SIZE,y,view->window_width-CELL_SIZE,y);
     }
     draw_player(b,view);
 }

@@ -9,6 +9,8 @@
 
     Visual * sdl_initialize();
     void cleanup(Visual * v);
-    void draw_grid(Board * b,Visual * view);
+    void draw_grid(Board * b,Visual * view,Score *score);
     void draw_player(Board * board,Visual * view);
+    void draw_score(Score * s,Visual * view);
+    void draw_number(int score,Visual *view, int depx,int depy);
 #endif

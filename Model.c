@@ -56,7 +56,7 @@ void destroy_game(Board * b,Score *s){
 }
 
 int collision_check(Board * board, Player * player){
-    if(player->x<0 || player->y<0 || player->x>=WIDTH || player->y>=HEIGHT) return 1;
+    if(player->x<1 || player->y<1 || player->x>=WIDTH-1 || player->y>=HEIGHT-1) return 1;
     //Cette condition est très longue pck cette fonction ne sait pas quelle joueur elle check, à modifié peut-être ?
     if(board->p1->x==player->x && board->p1->y==player->y && board->p2->x==player->x && board->p2->y==player->y)return 1;
     Tail * parc=board->p1->tail;
@@ -143,4 +143,3 @@ int update_score(Board * game,Score * scr){
 int gameOver(Score *score){
     return (score->scoreP1>=MAX_SCORE || score->scoreP2>=MAX_SCORE);
 }
-
