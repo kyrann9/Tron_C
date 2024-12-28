@@ -44,4 +44,5 @@ void set_direction(Board * b,int nbPlayer,Direction dir);
 void reset_game(Board * board,Score * score);
 void reset_round(Board * board);
 int gameOver(Score *score);
+void bot_decide(Board * b,Player *p);
 #endif

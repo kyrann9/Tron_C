@@ -16,7 +16,7 @@ void gameLoop(Board *board, Score *score);
 
 
 int keyPressEvent(SDL_Event event,Board * board);
-void mainLoop(Board * board, Score * score, Visual * view_SDL,int mode);
+void mainLoop(Board * board, Score * score, Visual * view_SDL,int mode,int nb_j);
 int draw_update_SDL(Board * b,Score * s, Visual * view_SDL);
 void draw_everything_SDL(Board*b,Visual * view_SDL,Score*score);
 int endgame(Board *board, Score * score,Visual* view);

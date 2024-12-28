@@ -6,8 +6,8 @@
 #define FRAME_DELAY 100000
 
 int main(int argc,char * argv[]) {
-    if(argc<2){
-        printf("USE CASE : \n%s [1-2]\1 : SLD; 2 : NCurses\n",argv[0]);
+    if(argc<3){
+        printf("USE CASE : \n%s [1-2] int\1 : SLD; 2 : NCurses\n",argv[0]);
         return 0;
     }
     else{ 
@@ -17,6 +17,8 @@ int main(int argc,char * argv[]) {
         }
     }
     int mdj=atoi(argv[1]);
+    int nb_j=0;
+    if(argc==2)nb_j=atoi(argv[2])%2;
     Board *board = init_game();
     Score *score = init_Score();
     if(mdj==0){
@@ -25,7 +27,7 @@ int main(int argc,char * argv[]) {
         init_controller();
         Visual * view_SDL=sdl_initialize();
         
-        mainLoop(board,score,view_SDL,mdj);
+        mainLoop(board,score,view_SDL,mdj,nb_j);
 
         cleanup(view_SDL); 
 
@@ -35,7 +37,7 @@ int main(int argc,char * argv[]) {
     if(mdj==1){
         Visual * view_SDL=sdl_initialize();
         
-        mainLoop(board,score,view_SDL,mdj);
+        mainLoop(board,score,view_SDL,mdj,nb_j);
 
         cleanup(view_SDL); 
     }
@@ -45,7 +47,7 @@ int main(int argc,char * argv[]) {
 
     init_controller();
 
-    mainLoop(board,score,NULL,mdj);
+    mainLoop(board,score,NULL,mdj,nb_j);
 
     cleanup_view_ncurses();
     cleanup_controller();

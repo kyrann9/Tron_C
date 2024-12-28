@@ -3,7 +3,7 @@ SRCDIR ?= src
 HEADIR ?= header
 OBJDIR ?= object
 TARGET ?= exec
-CFLAGS= -Wall -MMD
+CFLAGS= -Wall
 
 OBJS := $(shell find $(SRCDIR) -name "*.c" | sed 's/.c$$/.o/g' | sed 's/$(SRCDIR)/$(OBJDIR)/g')
 

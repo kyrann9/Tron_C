@@ -46,10 +46,10 @@ void destroy_player(Tail * t){
 }
 void destroy_game(Board * b,Score *s){
     Tail * t=b->p1->tail;
-    destroy_player(b->p1->tail);
-    t=b->p2->tail;
+    destroy_player(t);
     free(b->p1);
-    destroy_player(b->p2->tail);
+    t=b->p2->tail;
+    destroy_player(t);
     free(b->p2);
     free(s);
     free(b);
@@ -139,4 +139,159 @@ int update_score(Board * game,Score * scr){
 
 int gameOver(Score *score){
     return (score->scoreP1>=MAX_SCORE || score->scoreP2>=MAX_SCORE);
+}
+
+void bot_decide(Board * b,Player *p){
+    int sauv_x=p->x, sauv_y=p->y;
+    Player * player1=b->p1;
+    int distance_x=b->p1->x-p->x;
+    int distance_y=b->p1->y-p->y;
+
+    if(player1->x>=p->x && player1->y >= p->y){
+        if(distance_x>distance_y){
+            p->y=sauv_y-1;
+            if(!collision_check(b,p)){p->diry=-1;p->dirx=0;}
+            p->y=sauv_y;
+
+            p->x=sauv_x-1;
+            if(!collision_check(b,p)){p->dirx=-1;p->diry=0;}
+            p->x=sauv_x;
+
+            p->y=sauv_y+1;
+            if(!collision_check(b,p)){p->diry=1;p->dirx=0;}
+            p->y=sauv_y;
+            
+            p->x=sauv_x+1;
+            if(!collision_check(b,p)){p->dirx=1;p->diry=0;}
+            p->x=sauv_x;
+        }
+        else{
+            p->x=sauv_x-1;
+            if(!collision_check(b,p)){p->dirx=-1;p->diry=0;}
+            p->x=sauv_x;
+
+            p->y=sauv_y-1;
+            if(!collision_check(b,p)){p->diry=-1;p->dirx=0;}
+            p->y=sauv_y;
+
+            p->x=sauv_x+1;
+            if(!collision_check(b,p)){p->dirx=1;p->diry=0;}
+            p->x=sauv_x;
+
+            p->y=sauv_y+1;
+            if(!collision_check(b,p)){p->diry=1;p->dirx=0;}
+            p->y=sauv_y;
+        }
+    }
+    else if(player1->x>=p->x && player1->y <= p->y){
+        if(distance_x>-distance_y){
+
+            p->y=sauv_y+1;
+            if(!collision_check(b,p)){p->diry=1;p->dirx=0;}
+            p->y=sauv_y;
+
+            p->x=sauv_x-1;
+            if(!collision_check(b,p)){p->dirx=-1;p->diry=0;}
+            p->x=sauv_x;
+
+            p->y=sauv_y-1;
+            if(!collision_check(b,p)){p->diry=-1;p->dirx=0;}
+            p->y=sauv_y;
+
+            p->x=sauv_x+1;
+            if(!collision_check(b,p)){p->dirx=1;p->diry=0;}
+            p->x=sauv_x;
+        }
+        else{
+
+            p->x=sauv_x-1;
+            if(!collision_check(b,p)){p->dirx=-1;p->diry=0;}
+            p->x=sauv_x;
+
+            p->y=sauv_y+1;
+            if(!collision_check(b,p)){p->diry=1;p->dirx=0;}
+            p->y=sauv_y;
+
+            p->x=sauv_x+1;
+            if(!collision_check(b,p)){p->dirx=1;p->diry=0;}
+            p->x=sauv_x;
+
+            p->y=sauv_y-1;
+            if(!collision_check(b,p)){p->diry=-1;p->dirx=0;}
+            p->y=sauv_y;
+        }
+    }
+    else if(player1->x<=p->x && player1->y >= p->y){
+        if(-distance_x>distance_y){
+
+            p->y=sauv_y-1;
+            if(!collision_check(b,p)){p->diry=-1;p->dirx=0;}
+            p->y=sauv_y;
+
+            p->x=sauv_x+1;
+            if(!collision_check(b,p)){p->dirx=1;p->diry=0;}
+            p->x=sauv_x;
+
+            p->y=sauv_y+1;
+            if(!collision_check(b,p)){p->diry=1;p->dirx=0;}
+            p->y=sauv_y;
+
+            p->x=sauv_x-1;
+            if(!collision_check(b,p)){p->dirx=-1;p->diry=0;}
+            p->x=sauv_x;
+        }
+        else{
+            p->x=sauv_x+1;
+            if(!collision_check(b,p)){p->dirx=1;p->diry=0;}
+            p->x=sauv_x;
+
+            p->y=sauv_y-1;
+            if(!collision_check(b,p)){p->diry=-1;p->dirx=0;}
+            p->y=sauv_y;
+            
+            p->x=sauv_x-1;
+            if(!collision_check(b,p)){p->dirx=-1;p->diry=0;}
+            p->x=sauv_x;
+
+            p->y=sauv_y+1;
+            if(!collision_check(b,p)){p->diry=1;p->dirx=0;}
+            p->y=sauv_y;
+        }
+    }
+    else{
+        if(distance_x<distance_y){
+            p->y=sauv_y+1;
+            if(!collision_check(b,p)){p->diry=1;p->dirx=0;}
+            p->y=sauv_y;
+
+            p->x=sauv_x+1;
+            if(!collision_check(b,p)){p->dirx=1;p->diry=0;}
+            p->x=sauv_x;
+
+            p->y=sauv_y-1;
+            if(!collision_check(b,p)){p->diry=-1;p->dirx=0;}
+            p->y=sauv_y;
+
+            p->x=sauv_x-1;
+            if(!collision_check(b,p)){p->dirx=-1;p->diry=0;}
+            p->x=sauv_x;
+        }
+        else{
+            p->x=sauv_x+1;
+            if(!collision_check(b,p)){p->dirx=1;p->diry=0;}
+            p->x=sauv_x;
+
+            p->y=sauv_y+1;
+            if(!collision_check(b,p)){p->diry=1;p->dirx=0;}
+            p->y=sauv_y;
+            
+            p->x=sauv_x-1;
+            if(!collision_check(b,p)){p->dirx=-1;p->diry=0;}
+            p->x=sauv_x;
+
+            p->y=sauv_y-1;
+            if(!collision_check(b,p)){p->diry=-1;p->dirx=0;}
+            p->y=sauv_y;
+        }
+    }
 }
