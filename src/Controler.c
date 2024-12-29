@@ -97,16 +97,16 @@ int keyPressEvent(SDL_Event event,Board * board){
             return 0; 
             break;
         case SDLK_UP:
-            if(nb_joueur)set_direction(board,1,UP);
+            if(!nb_joueur)set_direction(board,1,UP);
             break;
         case SDLK_RIGHT:
-            if(nb_joueur)set_direction(board,1,RIGHT);
+            if(!nb_joueur)set_direction(board,1,RIGHT);
             break;
         case SDLK_DOWN:
-            if(nb_joueur)set_direction(board,1,DOWN);
+            if(!nb_joueur)set_direction(board,1,DOWN);
             break;
         case SDLK_LEFT:
-            if(nb_joueur)set_direction(board,1,LEFT);
+            if(!nb_joueur)set_direction(board,1,LEFT);
             break;
 
         case SDLK_z:
@@ -171,16 +171,16 @@ int process_input(Board *board) {
         case KEY_BACKSPACE:
             return 0;
         case KEY_DOWN:
-            if(nb_joueur)set_direction(board, 1, DOWN);
+            if(!nb_joueur)set_direction(board, 1, DOWN);
             break;
         case KEY_UP:
-            if(nb_joueur)set_direction(board, 1, UP);
+            if(!nb_joueur)set_direction(board, 1, UP);
             break;
         case KEY_LEFT:
-            if(nb_joueur)set_direction(board, 1, LEFT);
+            if(!nb_joueur)set_direction(board, 1, LEFT);
             break;
         case KEY_RIGHT:
-            if(nb_joueur)set_direction(board, 1, RIGHT);
+            if(!nb_joueur)set_direction(board, 1, RIGHT);
             break;
         case 'z':
             set_direction(board, 0, UP);
