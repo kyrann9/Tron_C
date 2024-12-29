@@ -10,12 +10,14 @@ int nb_joueur=1;
 // ----------------------------------- SDL PART ---------------------------
 
 /**
- * @brief the main loop of the game himself
+ * @brief the game's main loop
  *  
- * @param board
- * @param score
+ * @param board the game board
+ * @param score the game score
+ * @param view_SDL the SDL view
+ * @param mode int indicating the interface chosen by the user
+ * @param nb_j int indicating if the game is multi or single player 
  *
- *@return 
  */
 void mainLoop(Board * board, Score * score, Visual * view_SDL,int mode,int nb_j){
     nb_joueur=nb_j%2;
@@ -51,7 +53,13 @@ void mainLoop(Board * board, Score * score, Visual * view_SDL,int mode,int nb_j)
     else gameLoop(board,score);
 }
 
-
+/**
+ * @brief manages SDL event types, which allows us to use SDL_QUIT
+ *  
+ * @param board the game board
+ *
+ * @return integer that stops the game if the user quits the game
+ */
 int eventManager(Board* b){
     SDL_Event event; 
     while (SDL_PollEvent(&event)){
@@ -67,11 +75,26 @@ int eventManager(Board* b){
     return 1;
 }
 
+/**
+ * @brief draw the board 
+ *  
+ * @param board the game board
+ * @param score the game score
+ * @param view_SDL the SDL view
+ */
 void draw_everything_SDL(Board * b,Visual * view_SDL,Score *score){
     draw_grid(b,view_SDL,score);
 }
 
-
+/**
+ * @brief draw the board after the player moved, pause the game if the round is over and wait for user input
+ *  
+ * @param board the game board
+ * @param score the game score
+ * @param view_SDL the SDL view
+ *  
+ * @return integer that stops the game if the user quits the game
+ */
 int draw_update_SDL(Board * board, Score* score, Visual * view_SDL){
     SDL_Event event;
     add_tail(&(board->p1));
@@ -97,7 +120,14 @@ int draw_update_SDL(Board * board, Score* score, Visual * view_SDL){
     return 1;
 }
 
-
+/**
+ * @brief takes the event the user made by pressing a key, and react accordingly
+ * 
+ * @param event an SDL event   
+ * @param board the game board
+ *  
+ * @return integer that will end the game if the user pressed escape
+ */
 int keyPressEvent(SDL_Event event,Board * board){
     switch(event.key.keysym.sym){
         case SDLK_ESCAPE:
@@ -133,6 +163,14 @@ int keyPressEvent(SDL_Event event,Board * board){
     }
     return 1;
 }
+
+/**
+ * @brief called when the game is over, wait for user input in order to close or start a new game 
+ *  
+ * @param board the game board
+ * @param score the game score
+ * @param view the SDL view
+ */
 int endgame(Board* board,Score * score,Visual *view){
     SDL_Event event;
     while (SDL_PollEvent(&event)){
@@ -157,6 +195,9 @@ int endgame(Board* board,Score * score,Visual *view){
 
 //-------------------------------------- Ncurses Part ---------------------------------------
 
+/**
+ * @brief Initialize the Ncurses controler
+ */
 void init_controller() {
     initscr();
     cbreak();
@@ -166,11 +207,19 @@ void init_controller() {
     timeout(0);
 }
 
+/**
+ * @brief cleanup the Ncurses controler
+ */
 void cleanup_controller() {
     endwin();
 }
 
-
+/**
+ * @brief reads the user inputs for Ncurses and react accordingly to change the player's direction
+ * @param board the game board
+ * 
+ * @return an integer if the user decides to end the game (currently does not work) 
+ */
 int process_input(Board *board) {
     int ch = getch();
 
@@ -209,6 +258,12 @@ int process_input(Board *board) {
     return 1;
 }
 
+/**
+ * @brief The Ncurses main loop
+ * 
+ * @param board the game board
+ * @param score the game score
+ */
 void gameLoop(Board *board, Score *score){
     while (!gameOver(score)) {
         render_game_ncurses(board, score);

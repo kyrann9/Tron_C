@@ -3,7 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
+/**
+ * @brief initialize the board
+ * 
+ * @return the board pointer containing the game board
+ */
 Board * init_game(){
     Board * b=(Board *)malloc(sizeof(Board));
     if(!b){
@@ -33,17 +37,35 @@ Board * init_game(){
     return b;
 }
 
+/**
+ * @brief initialize the score
+ * 
+ * @return a score pointer containing the game score
+ */
 Score * init_Score(){
     Score * s=(Score *)malloc(sizeof(Score));
     s->scoreP1=0; s->scoreP2=0;
     return s;
 }
+
+/**
+ * @brief recursively free a player's trail
+ * 
+ * @param t a tail pointer correpsonding to a player's trail
+ */
 void destroy_player(Tail * t){
     if(t){
         destroy_player(t->tail);
         free(t);
     }
 }
+
+/**
+ * @brief free every memory allocation made for the game
+ * 
+ * @param b a board pointer containing the game board
+ * @param s a score pointer containing the game score
+ */
 void destroy_game(Board * b,Score *s){
     Tail * t=b->p1->tail;
     destroy_player(t);
@@ -55,6 +77,12 @@ void destroy_game(Board * b,Score *s){
     free(b);
 }
 
+/**
+ * @brief check if a player lost by looking for a collision with the player's head
+ * 
+ * @param board a board pointer containing the game board
+ * @param player a Player pointer containiing a player
+ */
 int collision_check(Board * board, Player * player){
     if(player->x<1 || player->y<1 || player->x>=WIDTH-1 || player->y>=HEIGHT-1) return 1;
     //Cette condition est très longue pck cette fonction ne sait pas quelle joueur elle check, à modifié peut-être ?
@@ -75,7 +103,13 @@ int collision_check(Board * board, Player * player){
     }
     return 0;
 }
-
+/**
+ * @brief Set the direction of a player
+ * 
+ * @param b a board pointer containing the game board
+ * @param nbPlayer an integer that specifies which player is trying to change directions
+ * @param dir part of the Direction enum which corresponds to the direction the player want to go to
+ */
 void set_direction(Board * b,int nbPlayer,Direction dir){
 
     Player * player =nbPlayer? b->p2: b->p1;
@@ -94,6 +128,12 @@ void set_direction(Board * b,int nbPlayer,Direction dir){
         player->dirx=sauvx;player->diry=sauvy;
     }
 }
+
+/**
+ * @brief add the a new head to the tail of a player, gives it the current player position and move the player in the direction they are moving to
+ * 
+ * @param p a pointer to apointer of the Player that will advance
+ */
 void add_tail(Player ** p){
     Tail * nhead=(Tail *)malloc(sizeof(Tail));
     if(!nhead){
@@ -105,10 +145,23 @@ void add_tail(Player ** p){
     (*p)->tail=nhead;
     (*p)->x+=(*p)->dirx,(*p)->y+=(*p)->diry;
 }
+
+/**
+ * @brief reset the score and call the function to reset the game
+ * 
+ * @param board the game board
+ * @param score the game score
+ */
 void reset_game(Board * board,Score * score){
     reset_round(board);
     score->scoreP1=0; score->scoreP2=0;
 }
+
+/**
+ * @brief reset the game
+ * 
+ * @param board the game board
+ */
 void reset_round(Board * board){
     if(!board)return;
     destroy_player(board->p1->tail);
@@ -119,6 +172,14 @@ void reset_round(Board * board){
     board->p2->x=(7*WIDTH)/8+1; board->p2->y=HEIGHT/2; board->p2->dirx=-1; board->p2->diry=0;
 }
 
+/**
+ * @brief check if a player has lost and update the score
+ * 
+ * @param game the game board
+ * @param scr the game score
+ * 
+ * @return an integer that is not 0 if the round is over
+ */
 int update_score(Board * game,Score * scr){
     int tmp1,tmp2;
     tmp1=collision_check(game,game->p1);
@@ -137,10 +198,23 @@ int update_score(Board * game,Score * scr){
     return 0;
 }
 
+/**
+ * @brief check if a player has won
+ * 
+ * @param score the game score
+ * 
+ * @return return not 0 if a player has the maximum amount of points
+ */
 int gameOver(Score *score){
     return (score->scoreP1>=MAX_SCORE || score->scoreP2>=MAX_SCORE);
 }
 
+/**
+ * @brief make the decision to change direction depending on the position of the first player
+ * 
+ * @param board the game score
+ * @param p the player controlled by the bot
+ */
 void bot_decide(Board * b,Player *p){
     int sauv_x=p->x, sauv_y=p->y;
     Player * player1=b->p1;

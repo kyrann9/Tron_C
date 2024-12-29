@@ -1,6 +1,9 @@
 #include "../header/View_Ncurses.h"
 #include <stdlib.h>
 
+/**
+ * @brief initialize the Ncurses view
+ */
 void init_view_ncurses() {
     initscr();
     cbreak();
@@ -12,12 +15,21 @@ void init_view_ncurses() {
     init_pair(2, COLOR_BLUE, COLOR_BLACK);
 }
 
+/**
+ * @brief End the NCurses view when called 
+ */
 void cleanup_view_ncurses() {
     endwin();
 }
 
+/**
+ * @brief Render everything in the Ncurses view, the borders, the players, and the score
+ * 
+ * @param board the game board
+ * @param score the game score
+ */
 void render_game_ncurses(Board *board, Score *score) {
-    clear();
+    erase();
 
     for (int i = 0; i < board->width; i++) {
         mvprintw(0, i, "#");

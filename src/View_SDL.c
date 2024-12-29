@@ -5,6 +5,11 @@
 
 #define CELL_SIZE 15
 
+/**
+ * @brief initialize the SDL
+ * 
+ * @return returns a structure (VIsual *) containing the SDL window and renderer
+ */
 Visual * sdl_initialize(){
     Visual * view=(Visual *)malloc(sizeof(Visual));
     if(SDL_Init(SDL_INIT_EVERYTHING)){
@@ -28,6 +33,13 @@ Visual * sdl_initialize(){
     return view;
 }
 
+/**
+ * @brief cleanup the SDL 
+ * whenever the SDL is used, there are huge memory leaks
+ * we might be missing an step in this function
+ * 
+ * @param v the view used by the game
+ */
 void cleanup(Visual * v){
     SDL_DestroyRenderer(v->renderer);
     SDL_DestroyWindow(v->window);
@@ -35,6 +47,13 @@ void cleanup(Visual * v){
     free(v);
 }
 
+/**
+ * @brief draws the grid then calls the function that draw the players 
+ * 
+ * @param b the game board
+ * @param view the struct containing the SDL window/renderer
+ * @param score the game score
+ */
 void draw_grid(Board* b,Visual * view,Score * score){
     SDL_SetRenderDrawColor(view->renderer,22,22,22,255);
     SDL_RenderClear(view->renderer);
@@ -58,6 +77,12 @@ void draw_grid(Board* b,Visual * view,Score * score){
     draw_player(b,view);
 }
 
+/**
+ * @brief draws the player and their tail
+ * 
+ * @param b the game board
+ * @param view the struct containing the SDL window/renderer
+ */
 void draw_player(Board * board,Visual * view){
     SDL_SetRenderDrawColor(view->renderer,180,30,180,255);
     Tail * t=board->p1->tail;
@@ -77,6 +102,14 @@ void draw_player(Board * board,Visual * view){
     SDL_RenderPresent(view->renderer);
 }
 
+/**
+ * @brief draws the number given starting from the given coordinates
+ * 
+ * @param score the number that will be drawn
+ * @param view the struct containing the SDL window/renderer
+ * @param depx the x starting point, situated at the the upper-left corner, the number will be drawn at
+ * @param depy the y starting point, situated at the the upper-left corner, the number will be drawn at
+ */
 void draw_number(int score,Visual *view, int depx,int depy){
     switch(score){
         case 0:
@@ -122,6 +155,14 @@ void draw_number(int score,Visual *view, int depx,int depy){
     }
 }
 
+
+/**
+ * @brief set the render color and call the function to draw the score in the upper left for the first playr, upper right for the second one
+ * The coordinates are arbitrary and do not change depending of the size of the window
+ * 
+ * @param score struct containing the game score
+ * @param view the struct containing the SDL window/renderer
+ */
 void draw_score(Score * s,Visual * view){
     SDL_SetRenderDrawColor(view->renderer,180,30,180,255);
     draw_number(s->scoreP1,view,100,25);
@@ -129,6 +170,12 @@ void draw_score(Score * s,Visual * view){
     draw_number(s->scoreP2,view,view->window_width-150,25);
 }
 
+/**
+ * @brief Small animation at the end of the game that covers the screen in blue or pink depending on the winner
+ * 
+ * @param view the struct containing the SDL window/renderer
+ * @param score struct containing the game score
+ */
 void anim_fin_SDL(Visual *view,Score * s){
     SDL_Rect r;
 
