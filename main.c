@@ -7,12 +7,12 @@
 
 int main(int argc,char * argv[]) {
     if(argc<3){
-        printf("USE CASE : \n%s [1-2] int\1 : SLD; 2 : NCurses\n",argv[0]);
+        printf("USE CASE : \n%s interface Player\n Interface :\n0 : Both SDL & Ncurses, 1 : SLD, 2 : NCurses\nPlayer :\nOdd : SinglePlayer, Even : MultiPlayer\n",argv[0]);
         return 0;
     }
     else{ 
-        if(atoi(argv[1])>3 && atoi(argv[1])<0){
-            printf("NON VALID NUMBER IN OPTION\n VALUE MUST BE BETWEEN 1 AND 2\n");
+        if(atoi(argv[1])>2 || atoi(argv[1])<0){
+            printf("NON VALID NUMBER IN OPTION\nVALUE MUST BE BETWEEN 0 AND 2\n");
             return 0;
         }
     }

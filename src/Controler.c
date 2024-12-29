@@ -31,7 +31,6 @@ void mainLoop(Board * board, Score * score, Visual * view_SDL,int mode,int nb_j)
                     last=SDL_GetTicks();
                     if(gameOver(score)){
                         anim_fin_SDL(view_SDL,score);
-                        if(!mode)anim_fin_Ncurses(board,score);
                     }
                 }
             }
