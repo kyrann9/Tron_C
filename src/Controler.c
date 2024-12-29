@@ -9,7 +9,14 @@
 int nb_joueur=1;
 // ----------------------------------- SDL PART ---------------------------
 
-
+/**
+ * @brief the main loop of the game himself
+ *  
+ * @param board
+ * @param score
+ *
+ *@return 
+ */
 void mainLoop(Board * board, Score * score, Visual * view_SDL,int mode,int nb_j){
     nb_joueur=nb_j%2;
     if(mode<2){

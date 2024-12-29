@@ -6,18 +6,20 @@
 #define FRAME_DELAY 100000
 
 int main(int argc,char * argv[]) {
-    if(argc<3){
-        printf("USE CASE : \n%s interface Player\n Interface :\n0 : Both SDL & Ncurses, 1 : SLD, 2 : NCurses\nPlayer :\nOdd : SinglePlayer, Even : MultiPlayer\n",argv[0]);
+    if(argc>1){
+        printf("USE CASE : \n%s\n",argv[0]);
         return 0;
     }
-    else{ 
-        if(atoi(argv[1])>2 || atoi(argv[1])<0){
-            printf("NON VALID NUMBER IN OPTION\nVALUE MUST BE BETWEEN 0 AND 2\n");
-            return 0;
-        }
-    }
-    int mdj=atoi(argv[1]);
-    int nb_j=0;
+    int mdj,nb_j;
+    do{
+        printf("Interface used : (1 = SDL, 2 = Ncurses, 0 = Both )\n");
+        scanf("%d",&mdj);
+    }while((mdj>2 || mdj<0));
+    do{
+        printf("Number of player : (1 = Singleplayer, 2 = Multiplayer\n");
+        scanf("%d",&nb_j);
+    }while((nb_j>2 || nb_j<0));
+
     if(argc>1)nb_j=atoi(argv[2])%2;
     Board *board = init_game();
     Score *score = init_Score();
