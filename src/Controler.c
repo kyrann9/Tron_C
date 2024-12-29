@@ -11,7 +11,7 @@ int nb_joueur=1;
 
 
 void mainLoop(Board * board, Score * score, Visual * view_SDL,int mode,int nb_j){
-    nb_joueur=nb_j;
+    nb_joueur=nb_j%2;
     if(mode<2){
         int quit=1;
 
@@ -25,10 +25,14 @@ void mainLoop(Board * board, Score * score, Visual * view_SDL,int mode,int nb_j)
             else{
                 quit=eventManager(board);
                 if(SDL_GetTicks()-last>=75){
-                    bot_decide(board,board->p2);
+                    if(nb_joueur)bot_decide(board,board->p2);
                     if(!mode)render_game_ncurses(board, score);
                     quit=draw_update_SDL(board,score,view_SDL);
                     last=SDL_GetTicks();
+                    if(gameOver(score)){
+                        anim_fin_SDL(view_SDL,score);
+                        if(!mode)anim_fin_Ncurses(board,score);
+                    }
                 }
             }
             if(quit && !mode){
@@ -94,16 +98,16 @@ int keyPressEvent(SDL_Event event,Board * board){
             return 0; 
             break;
         case SDLK_UP:
-            if(!nb_joueur)set_direction(board,1,UP);
+            if(nb_joueur)set_direction(board,1,UP);
             break;
         case SDLK_RIGHT:
-            if(!nb_joueur)set_direction(board,1,RIGHT);
+            if(nb_joueur)set_direction(board,1,RIGHT);
             break;
         case SDLK_DOWN:
-            if(!nb_joueur)set_direction(board,1,DOWN);
+            if(nb_joueur)set_direction(board,1,DOWN);
             break;
         case SDLK_LEFT:
-            if(!nb_joueur)set_direction(board,1,LEFT);
+            if(nb_joueur)set_direction(board,1,LEFT);
             break;
 
         case SDLK_z:
@@ -125,7 +129,6 @@ int keyPressEvent(SDL_Event event,Board * board){
 }
 int endgame(Board* board,Score * score,Visual *view){
     SDL_Event event;
-    draw_everything_SDL(board,view,score);
     while (SDL_PollEvent(&event)){
         if(event.type==SDL_QUIT){
             return 0;
@@ -169,16 +172,16 @@ int process_input(Board *board) {
         case KEY_BACKSPACE:
             return 0;
         case KEY_DOWN:
-            if(!nb_joueur)set_direction(board, 1, DOWN);
+            if(nb_joueur)set_direction(board, 1, DOWN);
             break;
         case KEY_UP:
-            if(!nb_joueur)set_direction(board, 1, UP);
+            if(nb_joueur)set_direction(board, 1, UP);
             break;
         case KEY_LEFT:
-            if(!nb_joueur)set_direction(board, 1, LEFT);
+            if(nb_joueur)set_direction(board, 1, LEFT);
             break;
         case KEY_RIGHT:
-            if(!nb_joueur)set_direction(board, 1, RIGHT);
+            if(nb_joueur)set_direction(board, 1, RIGHT);
             break;
         case 'z':
             set_direction(board, 0, UP);
@@ -205,7 +208,7 @@ void gameLoop(Board *board, Score *score){
         render_game_ncurses(board, score);
 
         process_input(board);
-        if(!nb_joueur)bot_decide(board,board->p2);
+        if(nb_joueur)bot_decide(board,board->p2);
         add_tail(&board->p1);
         add_tail(&board->p2);
 

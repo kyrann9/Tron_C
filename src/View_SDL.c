@@ -128,3 +128,18 @@ void draw_score(Score * s,Visual * view){
     SDL_SetRenderDrawColor(view->renderer,30,30,180,255);
     draw_number(s->scoreP2,view,view->window_width-150,25);
 }
+
+void anim_fin_SDL(Visual *view,Score * s){
+    SDL_Rect r;
+
+    (s->scoreP2>s->scoreP1)?SDL_SetRenderDrawColor(view->renderer,30,30,180,255):SDL_SetRenderDrawColor(view->renderer,180,30,180,255);
+    for(int i=0;i<view->window_height;i+=4*CELL_SIZE){
+    r.x = 0;
+    r.y = i;
+    r.w = view->window_width;
+    r.h = i+4*CELL_SIZE;
+        SDL_RenderFillRect(view->renderer,&r);
+        SDL_RenderPresent(view->renderer);
+        SDL_Delay(300);
+    }
+}

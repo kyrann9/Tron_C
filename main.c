@@ -18,7 +18,7 @@ int main(int argc,char * argv[]) {
     }
     int mdj=atoi(argv[1]);
     int nb_j=0;
-    if(argc==2)nb_j=atoi(argv[2])%2;
+    if(argc>1)nb_j=atoi(argv[2])%2;
     Board *board = init_game();
     Score *score = init_Score();
     if(mdj==0){
